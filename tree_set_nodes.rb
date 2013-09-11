@@ -33,29 +33,6 @@ class BinarySearchTree
     @tree_nodes = []
   end
 
-  def add_value(value, current_node = @first_node)
-    if current_node == nil
-      @first_node = TreeSetNode.new(value)
-      @tree_nodes << @first_node
-    elsif value < current_node.value
-      if current_node.left_child == nil
-        new_node = TreeSetNode.new(value)
-        current_node.left_child = new_node
-        @tree_nodes << new_node
-      else
-        add_value(value, current_node.left_child)
-      end
-    elsif value > current_node.value
-      if current_node.right_child == nil
-        new_node = TreeSetNode.new(value)
-        current_node.right_child = new_node
-        @tree_nodes << new_node
-      else
-        add_value(value, current_node.right_child)
-      end
-    end
-  end
-
   def find_value(value, current_node = @first_node)
     if current_node == nil
       return nil
@@ -68,17 +45,71 @@ class BinarySearchTree
     end
   end
 
+  def add_values(sorted_array)
+    p sorted_array
+    if sorted_array.length == 1
+      add_value(sorted_array.first)
+    else
+      add_value(sorted_array[sorted_array.length / 2])
+      left = sorted_array[0...sorted_array.length / 2]
+      right = sorted_array[sorted_array.length / 2 + 1 .. -1]
+      
+      add_values(left) if left.length > 0
+      add_values(right) if right.length > 0
+    end
+  end
+
+  def bst_well_formed?(current_node = @first_node, min = -1e99, max = 1e99)
+    # verify if the binary search tree is well-formed
+    bool_arr = []
+    p current_node.value, min, max
+    puts ""
+    
+    bool_arr << (current_node.value > min && current_node.value < max)
+
+    if current_node.left_child
+      bool_arr << bst_well_formed?(current_node.left_child, 
+        min, current_node.value)
+    end
+
+    if current_node.right_child
+      bool_arr << bst_well_formed?(current_node.right_child, 
+        current_node.value, max)
+    end
+
+    bool_arr.all?
+  end
+
+
+  private
+  def add_value(value, current_node = @first_node)
+    if current_node == nil # first node to be added to the tree
+      @first_node = TreeSetNode.new(value)
+      @tree_nodes << @first_node
+
+    elsif value < current_node.value # add a node with lesser value
+      if current_node.left_child == nil
+        new_node = TreeSetNode.new(value)
+        current_node.left_child = new_node
+        @tree_nodes << new_node
+      else
+        add_value(value, current_node.left_child)
+      end
+
+    elsif value > current_node.value # add a node with greater value
+      if current_node.right_child == nil
+        new_node = TreeSetNode.new(value)
+        current_node.right_child = new_node
+        @tree_nodes << new_node
+      else
+        add_value(value, current_node.right_child)
+      end
+
+    else # adding a node that already exists with that value
+      p "duplicate detected!"
+    end
+  end
+
+
+
 end
-
-# if $PROGRAM_NAME == __FILE__
-#   n = TreeSetNode.new
-#   o = TreeSetNode.new
-#   p = TreeSetNode.new
-
-#   n.left_child = o
-#   n.right_child = p
-
-#   p n.left_child == o
-#   p n.right_child == p  
-
-# end

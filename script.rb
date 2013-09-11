@@ -5,13 +5,12 @@ require 'set'
 require 'gnuplot'
 require 'debugger'
 
-n = BinarySearchTree.new
-
 num_el_arr = [1, 10, 1e2, 1e3, 1e4, 1e5]
 time_bst = []
 time_arr = []
 
 num_el_arr.each do |num_el|
+  n = BinarySearchTree.new
   s = (1..num_el).to_a.shuffle
   s.each do |el|
     n.add_value(el)
