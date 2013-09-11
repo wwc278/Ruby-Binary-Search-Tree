@@ -61,23 +61,17 @@ class BinarySearchTree
 
   def bst_well_formed?(current_node = @first_node, min = -1e99, max = 1e99)
     # verify if the binary search tree is well-formed
-    bool_arr = []
-    p current_node.value, min, max
-    puts ""
-    
-    bool_arr << (current_node.value > min && current_node.value < max)
 
-    if current_node.left_child
-      bool_arr << bst_well_formed?(current_node.left_child, 
-        min, current_node.value)
-    end
+    # check that the current node is within the min and max
+    current_node.value > min && current_node.value < max &&
 
-    if current_node.right_child
-      bool_arr << bst_well_formed?(current_node.right_child, 
-        current_node.value, max)
-    end
+    # AND that if the current node has a left child, recursively check that
+    (!current_node.left_child || bst_well_formed?(current_node.left_child, 
+      min, current_node.value)) &&
 
-    bool_arr.all?
+    # AND that if the current node has a right child, recursively check that
+    (!current_node.right_child || bst_well_formed?(current_node.right_child, 
+      current_node.value, max))
   end
 
 
@@ -109,7 +103,5 @@ class BinarySearchTree
       p "duplicate detected!"
     end
   end
-
-
 
 end
