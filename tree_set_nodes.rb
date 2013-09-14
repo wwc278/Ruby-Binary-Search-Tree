@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'pp'
+
 class TreeSetNode
   attr_accessor :parent, :value
 
@@ -45,17 +47,9 @@ class BinarySearchTree
     end
   end
 
-  def add_values(sorted_array)
-    p sorted_array
-    if sorted_array.length == 1
-      add_value(sorted_array.first)
-    else
-      add_value(sorted_array[sorted_array.length / 2])
-      left = sorted_array[0...sorted_array.length / 2]
-      right = sorted_array[sorted_array.length / 2 + 1 .. -1]
-      
-      add_values(left) if left.length > 0
-      add_values(right) if right.length > 0
+  def add_values(arr)
+    arr.each do |el|
+      add_value(el)
     end
   end
 
@@ -74,6 +68,35 @@ class BinarySearchTree
       current_node.value, max))
   end
 
+  def to_sorted_array(node = @first_node)
+    arr = []
+
+    arr.push(node.value)
+
+    if node.left_child
+      to_sorted_array(node.left_child).reverse_each do |el|
+        arr.unshift(el)
+      end
+    end
+
+    if node.right_child
+      to_sorted_array(node.right_child).each do |el|
+        arr.push(el)
+      end
+    end
+
+    arr
+  end
+
+  def bst_well_formed2?
+    sorted_array = to_sorted_array
+
+    sorted_array.each_with_index do |el, i|
+      next if i == 0
+      return false if el < sorted_array[i - 1]
+    end
+    true
+  end
 
   private
   def add_value(value, current_node = @first_node)
