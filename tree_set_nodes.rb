@@ -53,6 +53,32 @@ class BinarySearchTree
     end
   end
 
+  def to_s
+    str = ""
+
+    node_queue = [[@first_node]]
+
+    until node_queue.empty?
+      # p node_queue
+      next_level = []
+      node_queue.first.each do |node|
+        left = node.left_child
+        right = node.right_child
+
+        next_level << left if left
+        next_level << right if right
+
+        str << node.value.to_s + " "  
+      end
+
+      node_queue.shift
+      node_queue << next_level unless next_level.empty?
+      str << "\n"
+    end
+
+    str
+  end
+
   def bst_well_formed?(current_node = @first_node, min = -1e99, max = 1e99)
     # verify if the binary search tree is well-formed
 
